@@ -28,5 +28,6 @@ spec:
   type: LoadBalancer
   ports:
   - port: 80
+    targetPort: 4567
   selector:
     app: demoappjavaweb
