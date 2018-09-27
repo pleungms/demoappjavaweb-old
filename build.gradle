@@ -1,0 +1,32 @@
+apply plugin: "java"
+apply plugin: "idea"
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile "org.slf4j:slf4j-api:1.7.22"
+    compile "com.sparkjava:spark-core:2.6.0"
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    runtime "org.slf4j:slf4j-simple:1.7.22"
+
+    testCompile "junit:junit:4.12"
+}
+
+jar {
+    doFirst {
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } } 
+    }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA' 
+    
+    from {
+        (configurations.runtime).collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    manifest {
+        attributes "Main-Class": "org.pleungms.dockerize.demoappjavaweb"
+    }
+}
