@@ -57,6 +57,10 @@ public class demoappjavaweb {
 		numRows = 0;
 		rsString = "";
 
+        // get the SQL user id from the commandline
+		String sqluser = getSQLUser();
+		System.out.println("sqluser: " + sqluser);
+
 		//String sqlStmt = "SELECT * FROM TBL_PRO_PROFILES";
 		String sqlStmt = "SELECT ID, TXT, SECRET_TXT FROM TEST_ENCRYPT_TBL";
 
@@ -121,7 +125,7 @@ public class demoappjavaweb {
         } // try connection
 
         // Sending the resultset back to the http get request
-        get("/", (req, res) -> String.format("[demoappjavaweb using Always Encrypted] %s", getRsString()));
+        get("/", (req, res) -> String.format("[demoappjavaweb using Always Encrypted] %s [%s]", getRsString(), sqluser));
     } // demoappjavaweb
 
     // Getting the environment variable from the command line
@@ -140,6 +144,24 @@ public class demoappjavaweb {
             }
         }
         return user;
+    }
+
+    // Getting the environment variable from the command line
+    public static String getSQLUser() {
+        // 1. check for presence of environment variable
+        String sqluser = System.getenv("SQLUSER");
+        if(sqluser == null) {
+            // 2. load from properties file, if available
+            Properties props = new Properties();
+            try(InputStream instream = new FileInputStream("/data/application.properties")) {
+                props.load(instream);
+                return props.getProperty("sqluser.name", DEFAULT_USER);
+            }
+            catch(IOException e) {
+                return DEFAULT_USER;
+            }
+        }
+        return sqluser;
     }
 
     // Quick and dirty way to return the number of rows
