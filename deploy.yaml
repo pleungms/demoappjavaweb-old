@@ -17,7 +17,6 @@ spec:
       containers:
       - name: demoappjavaweb
         image: pleungcon.azurecr.io/pleungms/demoappjavaweb:$BUILD_ID
-        command: -eSQLUSER=pleungms@abcde
         ports:
         - containerPort: 4567
 ---
